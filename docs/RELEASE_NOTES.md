@@ -1,12 +1,12 @@
-# v0.1.0-alpha.1 — experimental preview
+# v0.1.1-alpha.2 — apply LSPosed without a full reboot
 
-Initial public LSPosed proof of concept for REDMI Buds 8 Lite, model `01013A03`.
+**Confirmed in v0.1.0-alpha.1:** After a process restart with LSPosed enabled, Redmi Buds 8 Lite identifier `01013A03` appeared in the live Xiaomi Bluetooth Extension whitelist, and ANC operated through the native controls.
 
-- Only `com.xiaomi.bluetooth` in scope.
-- Idempotently inserts the ID into a validated runtime list after `onCreate()` and `l2()`.
-- No vendor debug mode, system APK patch, network, analytics or global changes.
-- Android unit tests and a GitHub Actions debug APK build.
+New in this pre-release:
+- Adds a simple launcher screen and **Apply without reboot** button.
+- After explicit confirmation and a root grant, terminates **only the verified `com.xiaomi.bluetooth` process** (SIGTERM), permitting LSPosed to apply the hook on process restart. Reopen Bluetooth settings to trigger a restart if needed.
+- Does **not** automatically restart on APK install (LSPosed scope/root approval must come first), kill Android's core Bluetooth process, force-stop the package, or persist debugging properties.
+- Adds tests for the fixed restart command and documents rollback and failure cases.
+- Original whitelist patch remains unchanged.
 
-**No on-device validation of the new LSPosed module yet.** The earlier vendor debug-property experiment showed functional native UI and ANC/Transparency on one ROM; it was a different mechanism.
-
-Preview APK is **CI debug-signed with an ephemeral key**. Uninstall an older build before installing one from another CI run. Do not update headset firmware during experimental tests.
+**Still experimental:** The new one-tap apply UI has not yet been verified on hardware. A full reboot remains a fallback. Changing CI builds may require uninstalling the previous APK because the alpha is signed with an ephemeral GitHub Actions debug key. Avoid experimental firmware updates.

@@ -39,11 +39,15 @@ The checks intentionally fail closed on other OS builds. Reflection exceptions a
 | System originally lacks model ID in live list | Confirmed |
 | Vendor debug flag opens native UI | Confirmed |
 | Native UI actually switches ANC and Transparency under debug | Confirmed |
-| New LSPosed module compiles and unit tests pass | CI to determine |
-| Module injects ID in live service | **Not yet device verified** |
-| Native controls work after clean reboot, debug flag OFF, module ON | **Not yet device verified** |
+| Initial LSPosed alpha v0.1.0-alpha.1 builds/tests | Confirmed by GitHub Actions |
+| Initial module injects ID in live service | **Confirmed**: user saw `01013A03` at end of `dumpsys` list |
+| Native controls work after process restart with module | **Confirmed** by user; ANC works |
 | Low latency / gestures / firmware update | Not established |
 
 ## For maintainers
 
 Treat changes to the obfuscated field or method names as breaking compatibility. Do not assume a loaded image cache guarantees functionality. Do not copy copyrighted OEM APKs, smali or large decompiled source files into public issues. Provide minimal anonymized logs and firmware/build information instead.
+
+## Apply without reboot (v0.1.1-alpha.2)
+
+The extension is a separate Android process and LSPosed hooks only load on process start. Therefore installation/enabling does not necessarily affect an already-running process. The optional launcher Activity allows the user, **after configuring LSPosed scope**, to explicitly request a restart via `su`. Before signalling the PID, the command checks that `/proc/<pid>/cmdline` identifies `com.xiaomi.bluetooth`, and signals **only that extension** with SIGTERM. It avoids `am force-stop` (which can leave an app in a stopped state). This is **not an automatic trigger at package installation**; user permission is required and a full reboot remains a fallback. The new UI and signal handling still require on-device validation.

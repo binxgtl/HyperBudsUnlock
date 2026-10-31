@@ -14,3 +14,7 @@ Never upload proprietary BluetoothExtension APKs, private Qigsaw payloads, crede
 ## Signing
 
 The first alpha release is GitHub-Actions **debug-signed** and uses an ephemeral key. This is not a production signing solution. Configure a stable private signing key as a GitHub secret for future releases; never commit a keystore/password.
+
+## Manual root-assisted activation
+
+Version v0.1.1-alpha.2 offers a launcher activity with **Apply without reboot**. It never executes a command silently on APK install, update or boot. After explicit confirmation it invokes `su -c` on a worker thread and locates the exact `com.xiaomi.bluetooth` PID; it verifies the process command line and sends SIGTERM. A system service may briefly disconnect and should relaunch when needed. The target is **not** the core `com.android.bluetooth` process; `am force-stop` is deliberately not used. Root grants remain controlled by the user's root manager. There is no Internet or additional Android permission.
