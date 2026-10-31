@@ -1,0 +1,25 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'io.github.binxgtl.hyperbudsunlock'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'io.github.binxgtl.hyperbudsunlock'
+        minSdk 28
+        targetSdk 35
+        versionCode 1
+        versionName '0.1.0-alpha.1'
+    }
+    buildTypes {
+        debug { minifyEnabled false }
+        release { minifyEnabled false }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+dependencies {
+    // Declarations only. Framework classes are NEVER packaged in module APK.
+    compileOnly project(':xposed-stubs')
+    testImplementation 'junit:junit:4.13.2'
+}
