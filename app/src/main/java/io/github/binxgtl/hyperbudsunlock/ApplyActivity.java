@@ -87,7 +87,7 @@ public final class ApplyActivity extends Activity {
         applyButton.setEnabled(false);
         statusView.setText("Requesting root and restarting the extension...");
         new Thread(() -> {
-            final String result;
+            String result;
             try {
                 Process process = new ProcessBuilder("su", "-c", RestartCommand.shell())
                         .redirectErrorStream(true)
@@ -109,9 +109,10 @@ public final class ApplyActivity extends Activity {
                 Thread.currentThread().interrupt();
                 result = "Restart interrupted.";
             }
+            final String message = result;
             runOnUiThread(() -> {
                 applyButton.setEnabled(true);
-                statusView.setText(result);
+                statusView.setText(message);
             });
         }, "HyperBudsUnlock-apply").start();
     }
