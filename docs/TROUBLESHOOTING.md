@@ -42,3 +42,7 @@ Device/ROM build; Android version; `com.xiaomi.bluetooth` path/version; module v
 ## Apply without reboot fails
 
 The button is intentionally manual: root cannot safely be assumed at APK installation time and LSPosed scope must be enabled first. If no process is running, open Bluetooth settings and retry. If root is denied, authorize only from your trusted root manager. It sends SIGTERM only to a PID whose `/proc/<pid>/cmdline` matches `com.xiaomi.bluetooth`, never `com.android.bluetooth`, and does not use `am force-stop`. Native controls can briefly disconnect while Android recreates the service. A full reboot remains the recovery path.
+
+## Which version is actually tested?
+
+The public **v0.1.1 device-tested** release contains the **same APK bytes** as `v0.1.1-alpha.2`, confirmed working on Redmi Note 12 Turbo / China HyperOS 3.0.5.0.VMRCNXM (Android 15). The embedded app version still reads `0.1.1-alpha.2`, by design. No other firmware or phones are verified. If you had `v0.1.1-alpha.2` already installed, reinstalling the promoted artifact is unnecessary.

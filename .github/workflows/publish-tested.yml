@@ -1,0 +1,56 @@
+name: Publish verified device-tested APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/VERIFIED_RELEASE_NOTES.md
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'binxgtl/HyperBudsUnlock'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout documentation
+        uses: actions/checkout@v4
+
+      - name: Promote exact device-tested APK without rebuilding
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=v0.1.1
+          SOURCE=v0.1.1-alpha.2
+          SOURCE_APK="HyperBudsUnlock-${SOURCE}-debug.apk"
+          PROMOTED="HyperBudsUnlock-${TAG}-device-tested.apk"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::notice::Tested release already exists; not overwriting existing published APK."
+            exit 0
+          fi
+
+          mkdir -p dist
+          gh release download "$SOURCE" --pattern "HyperBudsUnlock-v0.1.1-alpha.2-debug.apk*" --dir dist
+
+          (
+            cd dist
+            test -s "$SOURCE_APK"
+            sha256sum -c "$SOURCE_APK.sha256"
+            mv "$SOURCE_APK" "$PROMOTED"
+            sha256sum "$PROMOTED" > "$PROMOTED.sha256"
+          )
+
+          gh release create "$TAG" \
+            "dist/$PROMOTED" \
+            "dist/$PROMOTED.sha256" \
+            --target "$GITHUB_SHA" \
+            --title "v0.1.1 — Device-tested on Redmi Note 12 Turbo" \
+            --notes-file docs/VERIFIED_RELEASE_NOTES.md \
+            --latest
+
+          echo "::notice::Promoted exact device-tested APK with verified SHA256 (no rebuild)."

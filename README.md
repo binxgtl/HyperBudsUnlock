@@ -2,9 +2,27 @@
 
 [![Android CI](https://github.com/binxgtl/HyperBudsUnlock/actions/workflows/android.yml/badge.svg)](https://github.com/binxgtl/HyperBudsUnlock/actions/workflows/android.yml)
 
-**Experimental LSPosed module for REDMI Buds 8 Lite (`01013A03`) native headset controls on Xiaomi HyperOS.**
+**Device-tested LSPosed module for REDMI Buds 8 Lite (`01013A03`) native headset controls on Xiaomi HyperOS.**
 
-> **Experimental build.** The user confirmed that the v0.1.0-alpha.1 LSPosed hook inserted `01013A03` into the live whitelist and ANC worked after restarting the extension. v0.1.1-alpha.2 adds a user-triggered apply UI and still needs specific on-device verification.
+> **DEVICE-TESTED (2026-11-01)**: The user tested the exact `v0.1.1-alpha.2` APK on Redmi Note 12 Turbo (`marble`), China HyperOS `3.0.5.0.VMRCNXM` / Android 15. With `MiuiFCServiceTest=INFO`, the module successfully inserted `01013A03`; the native panel, ANC and the user's tested functions worked. **Apply without reboot** was also successful. **This is one confirmed device/ROM combination, not universal compatibility or long-term stability testing.**
+
+**[Download device-tested v0.1.1](https://github.com/binxgtl/HyperBudsUnlock/releases/tag/v0.1.1)** — the release promotes the **byte-for-byte identical tested alpha.2 APK**, with SHA-256 verification; it remains **debug-signed** and its Android-internal `versionName` is `0.1.1-alpha.2` to preserve the exact verified build.
+
+## Verified device test
+
+| Item | Result |
+|---|---|
+| Device | Redmi Note 12 Turbo / `marble` |
+| OS | HyperOS `3.0.5.0.VMRCNXM`, Android 15, China ROM |
+| Earbuds | REDMI Buds 8 Lite, `01013A03` |
+| Debug override | `MiuiFCServiceTest=INFO` |
+| Module allowlist injection | **PASS** — `01013A03` appears in live `mSupportDeviceId` |
+| Native headset panel | **PASS** |
+| ANC and user-tested headset features | **PASS**, reported by device tester |
+| Apply without reboot | **PASS** on this device |
+| Firmware update / other ROMs / long-term stability | **Not verified** |
+
+**Reproducible A/B test:** Without the active hook after a process restart, `01013A03` was absent. With LSPosed enabled and the extension restarted, the ID returned and the native controls worked. This is a real-world single-device confirmation, not a promise about future Xiaomi firmware.
 
 ## Observed bug
 
@@ -71,16 +89,17 @@ The project uses an isolated, **compile-only** Java subproject `xposed-stubs` wi
 
 ## CI / release
 
-[GitHub Actions](.github/workflows/android.yml) runs tests + builds on pushes/PRs and uploads debug APK artifacts. On the first successful main-branch build of this update it creates a **v0.1.1-alpha.2 pre-release** with the built APK and SHA-256.
+[GitHub Actions](.github/workflows/android.yml) runs tests + builds on pushes/PRs and uploads debug APK artifacts. The device-tested **v0.1.1** release promotes the **exact same artifact** as `v0.1.1-alpha.2` with a verified SHA-256, rather than recompiling untested bytes. The separate `publish-tested.yml` workflow performs that promotion. The Android build workflow still runs CI tests and uploads artifacts.
 
-**IMPORTANT: Alpha uses ephemeral CI debug signing.** APKs from different CI runs may have different signing keys. Uninstall previous preview builds before installing one from a different run. Production releases will require a securely stored persistent signing key.
+**IMPORTANT: v0.1.1 retains the original alpha APK's debug signing key and Android `versionName`.** It is an identical tested binary, not a freshly built production-signed artifact. Upgrading from the specific `v0.1.1-alpha.2` APK should preserve signing compatibility; other CI builds may use different debug keys and require uninstalling first. Stable production signing remains future work.
 
 ## Documentation
 
 - [Technical analysis and limitations](docs/TECHNICAL.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [Security / privacy](docs/SECURITY.md)
-- [First alpha release notes](docs/RELEASE_NOTES.md)
+- [Verified v0.1.1 release notes](docs/VERIFIED_RELEASE_NOTES.md)
+- [Previous alpha release notes](docs/RELEASE_NOTES.md)
 
 **Privacy:** redact Bluetooth MACs, accounts, identifiers and private logs before filing issues. Do not redistribute proprietary Xiaomi APKs.
 
